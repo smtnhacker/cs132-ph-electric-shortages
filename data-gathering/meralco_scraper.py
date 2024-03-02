@@ -119,7 +119,7 @@ def scrape_n_days(n=1):
 
 def main():
     if not os.path.isdir(os.path.join("data-gathering", "data")):
-        os.makedirs("data")
+        os.makedirs(os.path.join("data-gathering", "data"))
     
     filepath = os.path.join("data-gathering", "data", "output.txt")
     # empties the current output
