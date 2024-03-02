@@ -1,5 +1,6 @@
 import os
 import time
+import traceback
 from datetime import date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -39,21 +40,28 @@ def has_maintanance():
 
 def get_affected_locs():
     try:
-        try:
-            load_more = driver.find_element(By.CLASS_NAME, "btn.btn-bordered.load-more")
-            # 2 or more presses changes the page
-            load_more.click()
-            driver.execute_script("window.scrollTo(0, 500);")
-            time.sleep(1)
-        except Exception:
-            # wont try to load next page anymore since it doesnt seem to exist
-            pass
-
-        posts = driver.find_element(By.CLASS_NAME, "views-infinite-scroll-content-wrapper.clearfix")
-        titles = set(x.get_attribute("innerHTML") for x in posts.find_elements(By.CSS_SELECTOR, "a[class='text-default']"))
-        affected_locs = [x.split(' - ', maxsplit=1)[1] for x in titles]
+        titles = set()
+        while True:
+            posts = driver.find_element(By.CLASS_NAME, "views-infinite-scroll-content-wrapper.clearfix")
+            titles |= set(x.get_attribute("innerHTML") for x in posts.find_elements(By.CSS_SELECTOR, "a[class='text-default']"))
+            try:
+                load_more = driver.find_element(By.CLASS_NAME, "btn.btn-bordered.load-more")
+                # 2 or more presses changes the page
+                load_more.click()
+                driver.execute_script("window.scrollTo(0, 500);")
+                time.sleep(1)
+            except Exception:
+                # wont try to load next page anymore since it doesnt seem to exist
+                break
+        affected_locs = []
+        for title in titles:
+            try:
+                x = title.split(' - ', maxsplit=1)[1]
+            except Exception:
+                x = title.split(' ', maxsplit=2)[2]
+            affected_locs.append(x)
         return affected_locs
-    except Exception:
+    except Exception as e:
         return []
 
 def scrape_n_days(n=1):
@@ -62,7 +70,7 @@ def scrape_n_days(n=1):
 
     cur_date = date.today()
 
-    # get the data for today
+    # click the day for today
     date_picker = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "bef-datepicker.form-text.form-control.hasDatepicker"))
     )
@@ -71,10 +79,11 @@ def scrape_n_days(n=1):
     cur_day_btn = calendar.find_element(By.CLASS_NAME, "ui-datepicker-days-cell-over.ui-datepicker-today")
     attempt_click(cur_day_btn)
 
-    yield DataRow(date=cur_date, has_outage=has_maintanance(), affected_locs=get_affected_locs())
+    # ignore data for today since its a bit messy
+    # yield DataRow(date=cur_date, has_outage=has_maintanance(), affected_locs=get_affected_locs())
 
     # get the previous days
-    for day in range(n-1):
+    for day in range(n):
         cur_date = cur_date - timedelta(days=1)
         time.sleep(1)
 
@@ -126,7 +135,7 @@ def main():
     # so be CAREFUL!!!
     open(filepath, 'w').close()
 
-    for dataRow in scrape_n_days(n=5):
+    for dataRow in scrape_n_days(n=2):
         with open(filepath, 'a') as f:
             f.write(str(dataRow))
     
