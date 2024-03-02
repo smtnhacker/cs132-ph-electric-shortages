@@ -14,9 +14,8 @@ This sections provides an overview of the scrapers used and how to use them.
 pip install selenium
 ```
 
-3. Go to the directory and run the scraper using:
+3. Run the scraper using:
 
 ```bash
-cd data-gathering
-python meralco_scraper.py
+python data-gathering/meralco_scraper.py
 ```
