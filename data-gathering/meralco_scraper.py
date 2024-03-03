@@ -13,7 +13,7 @@ class DataRow:
     def __init__(self, date, has_outage, affected_locs):
         self.date = date
         self.has_outage = 1 if has_outage else 0
-        self.affected_locs = '|'.join(affected_locs)
+        self.affected_locs = affected_locs
     
     def __str__(self):
         return f'{self.date},{self.has_outage},"{self.affected_locs}"\n'
@@ -70,7 +70,9 @@ def scrape_n_days(n=1):
         cur_date = cur_date - timedelta(days=1)
         time.sleep(1)
         formatted_date = cur_date.strftime("%m/%d/%Y")
-        yield DataRow(date=cur_date, has_outage=has_maintanance(), affected_locs=get_affected_locs(formatted_date))
+        for affected_locs in get_affected_locs(formatted_date):
+            has_outage = has_maintanance()
+            yield DataRow(date=cur_date, has_outage=has_outage, affected_locs=affected_locs)
 
 def main():
     if not os.path.isdir(os.path.join("data-gathering", "data")):
