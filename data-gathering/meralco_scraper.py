@@ -38,28 +38,23 @@ def has_maintanance():
     except Exception:
         return True
 
-def get_affected_locs():
+def get_affected_locs(cur_date):
     try:
         titles = set()
+        page = 0
         while True:
-            posts = driver.find_element(By.CLASS_NAME, "views-infinite-scroll-content-wrapper.clearfix")
-            titles |= set(x.get_attribute("innerHTML") for x in posts.find_elements(By.CSS_SELECTOR, "a[class='text-default']"))
+            url = f'https://company.meralco.com.ph/news-and-advisories/maintenance-schedule?field_service_maintenance_loc_target_id=All&date_range_filter={cur_date}&page={page}'
             try:
-                load_more = driver.find_element(By.CLASS_NAME, "btn.btn-bordered.load-more")
-                # 2 or more presses changes the page
-                load_more.click()
-                driver.execute_script("window.scrollTo(0, 500);")
+                driver.get(url)
                 time.sleep(1)
+                posts = WebDriverWait(driver, 1).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "views-infinite-scroll-content-wrapper.clearfix"))
+                )
+                titles |= set(x.get_attribute("innerHTML") for x in posts.find_elements(By.CSS_SELECTOR, "a[class='text-default']"))
             except Exception:
-                # wont try to load next page anymore since it doesnt seem to exist
                 break
-        affected_locs = []
-        for title in titles:
-            try:
-                x = title.split(' - ', maxsplit=1)[1]
-            except Exception:
-                x = title.split(' ', maxsplit=2)[2]
-            affected_locs.append(x)
+            page += 1
+        affected_locs = list(titles)
         return affected_locs
     except Exception as e:
         return []
@@ -70,61 +65,12 @@ def scrape_n_days(n=1):
 
     cur_date = date.today()
 
-    # click the day for today
-    date_picker = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "bef-datepicker.form-text.form-control.hasDatepicker"))
-    )
-    attempt_click(date_picker)
-    calendar = driver.find_element(By.CLASS_NAME, "ui-datepicker-calendar")
-    cur_day_btn = calendar.find_element(By.CLASS_NAME, "ui-datepicker-days-cell-over.ui-datepicker-today")
-    attempt_click(cur_day_btn)
-
-    # ignore data for today since its a bit messy
-    # yield DataRow(date=cur_date, has_outage=has_maintanance(), affected_locs=get_affected_locs())
-
     # get the previous days
     for day in range(n):
         cur_date = cur_date - timedelta(days=1)
         time.sleep(1)
-
-        # go to previous day
-        date_picker = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "bef-datepicker.form-text.form-control.hasDatepicker"))
-        )
-        attempt_click(date_picker)
-        calendar = driver.find_element(By.CLASS_NAME, "ui-datepicker-calendar")
-        available_days = calendar.find_elements(By.CSS_SELECTOR, "td[data-handler='selectDay']")
-        prev_day = None
-        for day in available_days:
-            if "ui-datepicker-current-day" in day.get_attribute("class"):
-                break
-            prev_day = day
-        
-        if prev_day == None:
-            time.sleep(1)
-            date_picker = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "bef-datepicker.form-text.form-control.hasDatepicker"))
-            )
-            attempt_click(date_picker)
-            month_picker = driver.find_element(By.CLASS_NAME, "ui-datepicker-header.ui-widget-header.ui-helper-clearfix.ui-corner-all")
-            prev_btn = month_picker.find_element(By.CLASS_NAME, "ui-datepicker-prev.ui-corner-all")
-            attempt_click(prev_btn)
-            time.sleep(1)
-
-            date_picker = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "bef-datepicker.form-text.form-control.hasDatepicker"))
-            )
-            attempt_click(date_picker)
-            calendar = driver.find_element(By.CLASS_NAME, "ui-datepicker-calendar")
-            available_days = calendar.find_elements(By.CSS_SELECTOR, "td[data-handler='selectDay']")
-            last_day = available_days[-1]
-            attempt_click(last_day)
-        else:
-            attempt_click(prev_day)
-
-        time.sleep(1)
-        
-        yield DataRow(date=cur_date, has_outage=has_maintanance(), affected_locs=get_affected_locs())
+        formatted_date = cur_date.strftime("%m/%d/%Y")
+        yield DataRow(date=cur_date, has_outage=has_maintanance(), affected_locs=get_affected_locs(formatted_date))
 
 def main():
     if not os.path.isdir(os.path.join("data-gathering", "data")):
@@ -135,11 +81,16 @@ def main():
     # so be CAREFUL!!!
     open(filepath, 'w').close()
 
-    for dataRow in scrape_n_days(n=2):
+    start_time = time.time()
+
+    for dataRow in scrape_n_days(n=10):
         with open(filepath, 'a') as f:
             f.write(str(dataRow))
     
-    print("Finished scraping!")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    
+    print(f"Finished scraping in {elapsed_time} seconds!")
 
 if __name__ == '__main__':
     main()
