@@ -10,13 +10,12 @@ from selenium.webdriver.support import expected_conditions as EC
 driver = webdriver.Chrome()
 
 class DataRow:
-    def __init__(self, date, has_outage, affected_locs):
+    def __init__(self, date, affected_locs):
         self.date = date
-        self.has_outage = 1 if has_outage else 0
         self.affected_locs = affected_locs
     
     def __str__(self):
-        return f'{self.date},{self.has_outage},"{self.affected_locs}"\n'
+        return f'{self.date},"{self.affected_locs}"\n'
 
 def attempt_click(element):
     tries = 0
@@ -32,6 +31,9 @@ def attempt_click(element):
                 print(e, flush=True)
 
 def has_maintanance():
+    """
+    Returns if a specific date has an outage
+    """
     try:
         warning = driver.find_element(By.CLASS_NAME, "alert.alert-warning")
         return False
@@ -71,8 +73,7 @@ def scrape_n_days(n=1):
         time.sleep(1)
         formatted_date = cur_date.strftime("%m/%d/%Y")
         for affected_locs in get_affected_locs(formatted_date):
-            has_outage = has_maintanance()
-            yield DataRow(date=cur_date, has_maintanance=has_outage, affected_locs=affected_locs)
+            yield DataRow(date=cur_date, affected_locs=affected_locs)
 
 def main():
     if not os.path.isdir(os.path.join("data-gathering", "data")):
