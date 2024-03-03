@@ -17,5 +17,5 @@ pip install selenium
 3. Run the scraper using:
 
 ```bash
-python data-gathering/meralco_scraper.py
+python data-gathering/meralco_scraper_v2.py
 ```
