@@ -72,7 +72,7 @@ def scrape_n_days(n=1):
         formatted_date = cur_date.strftime("%m/%d/%Y")
         for affected_locs in get_affected_locs(formatted_date):
             has_outage = has_maintanance()
-            yield DataRow(date=cur_date, has_outage=has_outage, affected_locs=affected_locs)
+            yield DataRow(date=cur_date, has_maintanance=has_outage, affected_locs=affected_locs)
 
 def main():
     if not os.path.isdir(os.path.join("data-gathering", "data")):
