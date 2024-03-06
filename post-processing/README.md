@@ -13,4 +13,7 @@ The format of the post-processors must be consistent. Hence, the output of each 
 
 - The script should be in Python.
 - The script should take all input (that is until end-of-file).
-- The script should output a **list of strings** where each string should be a valid electric shortage post. 
+
+#### PHASE 1
+
+The script should output a **list of strings** where each string should be a valid electric shortage post. 
