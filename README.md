@@ -14,8 +14,13 @@ This sections provides an overview of the scrapers used and how to use them.
 cd data-gathering
 pip install -r requirements.txt
 ```
-
-3. Run the scraper using:
+3. Prepare environmental file. The environment file should be named `.env` and should contain the following fields.
+```sh
+FACEBOOK_USER=(your facebook username)
+FACEBOOK_PASS=(your facebook password)
+```
+Do not share this file.
+4. Run the scraper using:
 
 ```bash
 cd data-gathering
