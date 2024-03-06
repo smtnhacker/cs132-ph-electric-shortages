@@ -8,14 +8,16 @@ This sections provides an overview of the scrapers used and how to use them.
 
 1. Install Python. For consistency, make sure it's at least Python 3.10
 
-2. Install `selenium` using the following. You can make a virtual environment if you want.
+2. Move your directory towards `data-gathering` and install the requirements using `pip`. You can make a virtual environment if you want.
 
 ```bash
-pip install selenium
+cd data-gathering
+pip install -r requirements.txt
 ```
 
 3. Run the scraper using:
 
 ```bash
-python data-gathering/meralco_scraper.py
+cd data-gathering
+python meralco_scraper.py
 ```
