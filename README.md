@@ -26,3 +26,9 @@ Do not share this file.
 cd data-gathering
 python meralco_scraper.py
 ```
+
+
+
+## Post-Processing
+
+This directory contains the scripts used to post-process all scraped data. Each script is named identically to the data file it processes.
