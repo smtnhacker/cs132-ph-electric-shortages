@@ -24,5 +24,5 @@ Do not share this file.
 
 ```bash
 cd data-gathering
-python meralco_scraper.py
+python meralco_scraper.py {number of days to scrape} {start date in Y-M-D format}
 ```
