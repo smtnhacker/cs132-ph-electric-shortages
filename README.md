@@ -14,19 +14,21 @@ This sections provides an overview of the scrapers used and how to use them.
 cd data-gathering
 pip install -r requirements.txt
 ```
+
 3. Prepare environmental file. The environment file should be named `.env` and should contain the following fields.
+
 ```sh
 FACEBOOK_USER=(your facebook username)
 FACEBOOK_PASS=(your facebook password)
 ```
+
 Do not share this file.
+
 4. Run the scraper using:
 
 ```bash
 cd data-gathering
 python meralco_scraper.py {number of days to scrape} {start date in Y-M-D format}
-```
-python meralco_scraper.py
 ```
 
 ## Post-Processing
