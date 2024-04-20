@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  font-weight: 300;
+  src: url("fonts/GeneralSans-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  font-weight: 400;
+  src: url("fonts/GeneralSans-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "GeneralSans";
+  font-weight: 500;
+  src: url("fonts/GeneralSans-Semibold.otf") format("opentype");
+}
+
+:root {
+  /* fonts */
+  --subtitle-font: "GeneralSans";
+
+  /* font sizes */
+  --subtitle-font-size: 28px;
+  --normal-text-size: 22px;
+  --font-size-lg: 18px;
+  --font-size-15xl: 34px;
+  --font-size-xl: 20px;
+  --font-size-8xl: 27px;
+  --font-size-sm: 14px;
+
+  /* Colors */
+  --color-white: #fff;
+  --color-gray: #0d0d0d;
+  --color-orangered-100: #ff5114;
+  --color-tomato: #ff6b2e;
+
+  /* Gaps */
+  --gap-45xl: 64px;
+  --gap-base: 16px;
+  --gap-13xl: 32px;
+  --gap-3xl: 22px;
+  --gap-5xs: 8px;
+  --gap-6xl: 25px;
+  --gap-29xl: 48px;
+  --gap-5xl: 24px;
+  --gap-21xl: 40px;
+  --gap-xl: 20px;
+  --gap-mini: 15px;
+
+  /* Paddings */
+  --padding-xl: 20px;
+  --padding-base: 16px;
+  --padding-mini: 15px;
+  --padding-2xl: 21px;
+  --padding-27xl: 46px;
+  --padding-11xl: 30px;
+  --padding-11xs: 2px;
+  --padding-74xl: 93px;
+  --padding-59xl: 78px;
+
+  /* Border radiuses */
+  --br-5xs: 8px;
+}
