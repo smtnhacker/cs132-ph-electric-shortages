@@ -31,6 +31,10 @@ cd data-gathering
 python meralco_scraper.py {number of days to scrape} {start date in Y-M-D format}
 ```
 
-## Post-Processing
+## Exploratory Data Analysis
 
-This directory contains the scripts used to post-process all scraped data. Each script is named identically to the data file it processes.
+This section/folder contains all the data (cleaned) and the colab notebook for processing the data. The colab noteboot also produces the nutshell plot and the necessary plots for the web portfolio.
+
+## Machine Learning
+
+This section contains the colab notebook for machine learning.
